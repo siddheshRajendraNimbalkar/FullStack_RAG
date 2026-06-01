@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Environment Variables
+.env
+.env.*
+
+# IDEs
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Alembic
+migrations/versions/*.pyc
+migrations/__pycache__/
+
+# Database
+*.db
+*.sqlite3
+
+# ChromaDB
+chroma_db/
+vectorstore/
+persist_directory/
+
+# Uploaded Files
+uploads/
+temp/
+tmp/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Docker
+docker-compose.override.yml
+
+# Ollama Models (if local)
+ollama/
+
+# MyPy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Pyright
+.pyright/
+
+# Secrets
+secrets/
+*.pem
+*.key
