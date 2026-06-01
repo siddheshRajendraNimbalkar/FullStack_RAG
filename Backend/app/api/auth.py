@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+
 from app.models.user import User
 
 from app.schemas.auth import (
@@ -12,12 +13,12 @@ from app.schemas.auth import (
     LoginRequest
 )
 
-from app.core.security import (
-    hash_password,
-    verify_password
+from app.services.auth_service import (
+    create_user,
+    authenticate_user
 )
 
-from app.services.auth_service import (
+from app.services.jwt_service import (
     create_access_token
 )
 
@@ -29,60 +30,55 @@ router = APIRouter(
 
 @router.post("/register")
 def register(
-    data: RegisterRequest,
+    request: RegisterRequest,
     db: Session = Depends(get_db)
 ):
 
-    existing = db.query(User)\
-        .filter(
-            User.username == data.username
-        )\
-        .first()
+    existing_user = db.query(User).filter(
+        User.username == request.username
+    ).first()
 
-    if existing:
+    if existing_user:
         raise HTTPException(
             status_code=400,
-            detail="User already exists"
+            detail="Username already exists"
         )
 
-    user = User(
-        username=data.username,
-        password=hash_password(
-            data.password
-        )
+    user = create_user(
+        db,
+        request.username,
+        request.password
     )
 
-    db.add(user)
-    db.commit()
+    token = create_access_token(
+        str(user.id)
+    )
 
     return {
-        "message": "registered"
+        "access_token": token
     }
 
 
 @router.post("/login")
 def login(
-    data: LoginRequest,
+    request: LoginRequest,
     db: Session = Depends(get_db)
 ):
 
-    user = db.query(User)\
-        .filter(
-            User.username == data.username
-        )\
-        .first()
+    user = authenticate_user(
+        db,
+        request.username,
+        request.password
+    )
+
+    print(request.username)
+    print(request.password)
+    print(user)
 
     if not user:
         raise HTTPException(
-            status_code=401
-        )
-
-    if not verify_password(
-        data.password,
-        user.password
-    ):
-        raise HTTPException(
-            status_code=401
+            status_code=401,
+            detail="Invalid credentials"
         )
 
     token = create_access_token(

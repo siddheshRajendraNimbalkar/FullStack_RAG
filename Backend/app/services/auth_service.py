@@ -1,24 +1,46 @@
-from jose import jwt
-from datetime import datetime
-from datetime import timedelta
-import os
+from sqlalchemy.orm import Session
 
-SECRET = os.getenv("JWT_SECRET")
+from app.models.user import User
 
-ALGORITHM = "HS256"
+from app.core.security import (
+    hash_password,
+    verify_password
+)
 
 
-def create_access_token(
-    user_id: str
+def create_user(
+    db: Session,
+    username: str,
+    password: str
 ):
-    payload = {
-        "sub": user_id,
-        "exp": datetime.utcnow()
-        + timedelta(days=1)
-    }
-
-    return jwt.encode(
-        payload,
-        SECRET,
-        algorithm=ALGORITHM
+    user = User(
+        username=username,
+        password=hash_password(password)
     )
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return user
+
+
+def authenticate_user(
+    db: Session,
+    username: str,
+    password: str
+):
+    user = db.query(User).filter(
+        User.username == username
+    ).first()
+
+    if not user:
+        return None
+
+    if not verify_password(
+        password,
+        user.password
+    ):
+        return None
+
+    return user
