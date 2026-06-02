@@ -13,7 +13,10 @@ from app.schemas.collection import (
 )
 
 from app.services.collection_service import (
-    create_collection
+    create_collection,
+    get_collections,
+    get_collection,
+    delete_collection
 )
 
 router = APIRouter(

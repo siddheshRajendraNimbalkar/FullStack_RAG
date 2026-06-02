@@ -15,6 +15,9 @@ help:
 venv:
 	venv\Scripts\activate
 
+run-main:
+	uvicorn app.main:app --reload
+
 install:
 	pip install -r requirements.txt
 

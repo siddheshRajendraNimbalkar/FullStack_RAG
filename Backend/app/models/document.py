@@ -6,6 +6,7 @@ from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import BigInteger
 
 from datetime import datetime
 
@@ -35,6 +36,10 @@ class Document(Base):
         String,
         nullable=False
     )
+
+
+    file_type = Column(String)
+    file_size = Column(BigInteger)
 
     created_at = Column(
         DateTime,
