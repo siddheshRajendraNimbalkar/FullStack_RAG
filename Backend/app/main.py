@@ -7,6 +7,18 @@ from app.api.collections import (
 
 from app.api.documents import router as documents_router
 
+from app.api.debug import (
+    router as debug_router
+)
+
+from app.api.chat import (
+    router as chat_router
+)
+
+from app.api.chat import (
+    router as history_router
+)
+
 app = FastAPI()
 
 app.include_router(auth_router)
@@ -24,3 +36,17 @@ app.include_router(
 )
 
 app.include_router(documents_router)
+
+
+
+app.include_router(
+    debug_router
+)
+
+
+
+app.include_router(
+    chat_router
+)
+
+app.include_router(history_router)

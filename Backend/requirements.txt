@@ -24,3 +24,5 @@ aiofiles
 python-dotenv
 
 alembic
+
+sse-starlette
