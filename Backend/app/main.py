@@ -19,6 +19,10 @@ from app.api.chat import (
     router as history_router
 )
 
+from app.api.voice import (
+    router as voice_router
+)
+
 app = FastAPI()
 
 app.include_router(auth_router)
@@ -50,3 +54,7 @@ app.include_router(
 )
 
 app.include_router(history_router)
+
+app.include_router(
+    voice_router
+)

@@ -18,10 +18,7 @@ from app.services.collection_service import (
     get_collection
 )
 
-from app.services.chat_service import (
-    ask_collection
-)
-
+from app.services.chat_service import ask_collection
 from app.services.history_service import (
     save_chat
 )
@@ -57,6 +54,8 @@ def chat(
         )
 
     result = ask_collection(
+        db=db,
+        user_id=current_user.id,
         collection_id=request.collection_id,
         question=request.question
     )
@@ -66,7 +65,7 @@ def chat(
         user_id=current_user.id,
         collection_id=request.collection_id,
         question=request.question,
-        answer=payload["answer"]
+        answer=result["answer"]
     )
 
     return result
@@ -97,6 +96,8 @@ async def stream_chat(
         complete_answer = ""
 
         async for event in stream_collection_answer(
+            db=db,
+            user_id=current_user.id,
             collection_id=request.collection_id,
             question=request.question
         ):

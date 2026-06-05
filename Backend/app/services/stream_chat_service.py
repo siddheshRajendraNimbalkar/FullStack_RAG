@@ -10,25 +10,46 @@ from app.services.llm_service import (
     get_llm
 )
 
+from app.services.memory_service import (
+    get_recent_chats
+)
+
+from app.services.chat_service import build_history
+
 import json
 
 async def stream_collection_answer(
+    db,
+    user_id,
     collection_id: str,
     question: str
 ):
-    retriever = get_retriever(
+    history = get_recent_chats(
+        db=db,
+        user_id=user_id,
         collection_id=collection_id,
-        k=5
+        limit=5
     )
 
-    docs = retriever.invoke(question)
+    history_text = build_history(
+        history
+    )
+    retriever = get_retriever(
+    collection_id,
+    k=5
+)
 
+    docs = retriever.invoke(
+        question
+    )
+    
     context = "\n\n".join(
         doc.page_content
         for doc in docs
     )
 
     prompt = RAG_PROMPT.format(
+        history=history_text,
         context=context,
         question=question
     )
